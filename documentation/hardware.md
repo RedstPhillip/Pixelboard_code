@@ -20,7 +20,7 @@ Bei jeder Änderung an Verkabelung oder Pins wird sie von der KI selbständig ak
 | GND | Joystick GND | – |
 | 34 | Joystick X | ADC1, nur Eingang, kein interner Pull-up/-down |
 | 35 | Joystick Y | ADC1, nur Eingang, kein interner Pull-up/-down |
-| 16 | Data-Pin LED-Panel (**aktuell zum Testen**, nur ein Panel angeschlossen) | Ausgang; bei ESP32-WROVER-Modulen für PSRAM belegt, beim WROOM (esp32dev) frei |
+| 16 | Data-Pin LED-Panel (**aktuell zum Testen**, nur ein Panel angeschlossen; Aufgabe 1 und 2) | Ausgang; bei ESP32-WROVER-Modulen für PSRAM belegt, beim WROOM (esp32dev) frei |
 | 25 | Data-Pin oberes LED-Panel (geplant) | Ausgang (ADC2-Pin, als digitaler Ausgang unproblematisch) |
 | 26 | Data-Pin unteres LED-Panel (geplant) | Ausgang (ADC2-Pin, als digitaler Ausgang unproblematisch) |
 | 13 (?) | DHT22 Data | **noch auszuprobieren** |
@@ -50,6 +50,8 @@ Ursprünglich geplant, aber **nicht angeschlossen** (nur ein Joystick vorhanden)
 
 > **ACHTUNG:** Bei manchen ESP32-Boards mit 36 Pins ist der Pin zwischen „5 V“ und „SD3“/„GPIO 11“
 > fälschlich mit „GND“ beschriftet. Richtig wäre **„CMD“** – dort **nicht** GND anschließen!
+> Folge (2026-10-13 bei Dominika): Upload bricht mit „Failed to communicate with the flash chip“ ab.
+> Ein echter GND ist z. B. der Pin zwischen GPIO 19 und GPIO 21.
 
 ## Prüfung der aktuellen Belegung
 
