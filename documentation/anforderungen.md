@@ -27,7 +27,8 @@ Zurück zur [Übersicht](index.md).
 1. Laufschrift mit LEDText, die eine Variable enthält (z. B. Sekundenzähler)
 2. Für Spiele: Methode, die einzelne LEDs über ein **x/y-Koordinatensystem** ansteuert
 
-**Status:** Aufgabe 2 für 1 Panel umgesetzt (`LedPanel::setzePixel`), Aufgabe 1 noch nicht begonnen.
+**Status:** Beide Aufgaben für 1 Panel umgesetzt, jede mit eigenem Hauptprogramm:
+Aufgabe 1 in `src/aufgabe1/main.cpp` (Klasse `Laufschrift`), Aufgabe 2 in `src/aufgabe2/main.cpp` (`LedPanel::setzePixel`).
 
 ## Erstes Mini-Projekt: Joystick-Klasse (abgeschlossen)
 
@@ -58,6 +59,9 @@ Ein Joystick besteht aus:
 | 2026-10-13 | Koordinatensystem | **(0,0) = links oben**, x nach rechts (0..31), y nach unten (0..7) – wie bei Bildschirmen, praktisch für Tetris/Snake |
 | 2026-10-13 | x/y-Umrechnung | Eigene Methode in Klasse `LedPanel` (nicht LEDMatrix), da die Umrechnung die Aufgabe ist. Pin als Template-Parameter (`begin<16>()`), weil FastLED ihn beim Kompilieren braucht |
 | 2026-10-13 | Pixelboard | Vorerst nur `main.cpp` bearbeiten: Testprogramm für **ein** Panel an GPIO 16. FastLED fest auf **3.7.8** (3.10.x kompiliert nicht) |
+| 2026-10-13 | Aufteilung Aufgaben | Projekte von Philipp (Aufgabe 2) und Dominika (Aufgabe 1) zusammengeführt. Jede Aufgabe hat ein eigenes Hauptprogramm (`src/aufgabe1/`, `src/aufgabe2/`) und eine eigene PlatformIO-Umgebung (`env:aufgabe1`, `env:aufgabe2`, per `build_src_filter`); Klassen gemeinsam in `src/` |
+| 2026-10-13 | Aufgabe 1 | Klasse `Laufschrift` nutzt **LEDMatrix** (Umrechnung) + **LEDText** (Laufschrift), unabhängig von `LedPanel`. Text „Zeit: X s“, grün, 50 ms pro Spalte; die Zahl zählt jede Sekunde **während** des Durchlaufs hoch (`aendereText()`), Text fest 12 Zeichen lang |
+| 2026-10-13 | Upload-Port | `upload_port`/`monitor_port` nicht mehr fest (COM6), sondern automatische Erkennung – der Port ist auf jedem PC anders |
 
 ## Offene Fragen (erst bei Bedarf klären)
 

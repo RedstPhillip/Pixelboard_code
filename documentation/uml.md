@@ -83,3 +83,45 @@ classDiagram
 ```
 
 Objekt im Testprogramm: `panel`, angemeldet mit `panel.begin<16>()`.
+
+## Klasse `Laufschrift` (`src/Laufschrift.h`, `src/Laufschrift.cpp`) – Aufgabe 1
+
+Lässt einen Text über **ein** Panel laufen. Nutzt **LEDMatrix** (Koordinaten → LED-Nummer, Vertical Zig-Zag) und
+**LEDText** (Laufschrift, Schrift `FontMatrise` 5×7). Unabhängig von `LedPanel` (eigener LED-Speicher in `matrix`).
+`matrix` ist vom Typ `cLEDMatrix<PANEL_BREITE, PANEL_HOEHE, VERTICAL_ZIGZAG_MATRIX>` mit 32 und −8
+(negative Höhe = LED 0 links oben, passend zu T7).
+
+```mermaid
+classDiagram
+  class Laufschrift {
+    -cLEDMatrix matrix
+    -cLEDText text
+    -static const uint16_t MAX_TEXT_LAENGE = 64
+    -unsigned char textPuffer[65]
+    -uint16_t textLaenge
+    -bool textGesetzt
+    -unsigned long schrittZeit
+    -unsigned long letzterSchrittZeit
+    -bool durchlaufFertig
+    +Laufschrift(unsigned long schrittZeitMs)
+    +getLeds() CRGB*
+    +getAnzahlLeds() int
+    +begin(uint8_t rot, uint8_t gruen, uint8_t blau) void
+    +setText(const char* neuerText) void
+    +aendereText(const char* neuerText) void
+    +update() void
+    +wurdeDurchlaufBeendet() bool
+  }
+```
+
+| Methode | Beschreibung |
+|---|---|
+| `Laufschrift(schrittZeitMs)` | Speichert die Geschwindigkeit (ms pro Spalte). Kein Hardwarezugriff. |
+| `getLeds()` / `getAnzahlLeds()` | LED-Speicher bzw. Anzahl (256) für `FastLED.addLeds<WS2812B, PIN, GRB>(…)` in `setup()`. |
+| `begin(rot, gruen, blau)` | Schriftart, Textbereich (ganzes Panel) und Textfarbe setzen. Einmal nach `addLeds`. |
+| `setText(text)` | Kopiert den Text (6 führende Leerzeichen, max. 64 Zeichen) in den eigenen Puffer, startet den Durchlauf neu. |
+| `aendereText(text)` | Tauscht den Text **während** des Durchlaufs aus (kein Neustart). Länge bleibt gleich: kürzer → mit Leerzeichen aufgefüllt, länger → abgeschnitten. Geht, weil LEDText die sichtbaren Zeichen bei jedem Schritt neu aus dem Puffer liest. |
+| `update()` | Alle `schrittZeit` ms eine Spalte weiter + `FastLED.show()`. Nicht blockierend, in jedem `loop()` aufrufen. |
+| `wurdeDurchlaufBeendet()` | Einmalig `true`, wenn der Text komplett durchgelaufen ist. |
+
+Objekt in Aufgabe 1: `laufschrift(50)`, angemeldet an GPIO 16.
