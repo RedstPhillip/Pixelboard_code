@@ -25,12 +25,18 @@ Taster/
 │   ├── Joystick.cpp     Klasse Joystick – Implementierung der Methoden
 │   ├── LedPanel.h       Klasse LedPanel – Deklaration (ein Panel 32x8, x/y-Koordinaten)
 │   ├── LedPanel.cpp     Klasse LedPanel – Implementierung (Umrechnung x/y → LED-Index)
-│   └── main.cpp         Testprogramm x/y-Koordinaten (1 Panel an GPIO 16)
+│   ├── Laufschrift.h    Klasse Laufschrift – Deklaration (Text über ein Panel, LEDText)
+│   ├── Laufschrift.cpp  Klasse Laufschrift – Implementierung
+│   ├── aufgabe1/
+│   │   └── main.cpp     Aufgabe 1: Laufschrift mit Sekundenzähler (1 Panel an GPIO 16) → env:aufgabe1
+│   └── aufgabe2/
+│       └── main.cpp     Aufgabe 2: Testprogramm x/y-Koordinaten (1 Panel an GPIO 16) → env:aufgabe2
 └── documentation/       Diese Dokumentation
 ```
 
 ## Aktueller Stand
 
 Siehe [todo.md](todo.md). Kurzfassung: Joystick-Mini-Projekt abgeschlossen. Neues **Projekt Pixelboard**:
-Libraries installiert und getestet. Aufgabe 2 (x/y-Methode) für **ein** Panel umgesetzt in der Klasse `LedPanel`,
-Hardwaretest T7 offen. Danach: 2 Panels (oberes 180° gedreht), Aufgabe 1 (Laufschrift).
+Libraries installiert und getestet. Beide Aufgaben für **ein** Panel umgesetzt, jede mit eigenem Hauptprogramm:
+Aufgabe 1 (Laufschrift, Klasse `Laufschrift`, Test T8 offen) und Aufgabe 2 (x/y-Methode, Klasse `LedPanel`, Test T7a offen).
+Danach: beide Aufgaben für 2 Panels (oberes 180° gedreht).

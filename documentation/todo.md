@@ -25,12 +25,18 @@ Zurück zur [Übersicht](index.md).
 - [x] 2026-10-13 – Aufgabe 2 (1 Panel): `LedPanel::setzePixel(x, y, farbe)` mit eigener Zig-Zag-Umrechnung; Build ✅ (T7)
 - [x] 2026-10-13 – Alten Code (`documentation/alt/`) gelöscht; Projekt als Git-Repository auf GitHub veröffentlicht
       (public: github.com/RedstPhillip/Pixelboard_code)
+- [x] 2026-10-13 – Aufgabe 1 (1 Panel): Klasse `Laufschrift` (LEDText/LEDMatrix), Laufschrift „Zeit: X s“, Zahl zählt
+      während des Durchlaufs hoch (von Dominika, in eigenem Projekt entwickelt und getestet)
+- [x] 2026-10-13 – Projekte zusammengeführt: `src/aufgabe1/main.cpp` (Laufschrift) und `src/aufgabe2/main.cpp` (x/y),
+      je eigene PlatformIO-Umgebung; Upload-Port automatisch statt COM6; Build beider Umgebungen ✅ (T8)
 
 ## Offen
 
 ### Pixelboard
 - [ ] Test T7a durchführen (korrigierte y-Richtung)
-- [ ] Aufgabe 1: Laufschrift mit Variable (z. B. Sekundenzähler) – erst 1 Panel, dann 2
+- [ ] Test T8 durchführen (Aufgabe 1 an GPIO 16)
+- [ ] Aufgabe 1 für **2 Panels**: zweites `Laufschrift`-Objekt; dabei beachten: `update()` ruft `FastLED.show()` auf
+      und sendet damit alle Panels; oberes Panel 180° gedreht (Vorzeichen von Breite **und** Höhe umkehren)
 - [ ] Aufgabe 2 für **2 Panels**: zweites Panel (180° gedreht) – z. B. `LedPanel` um Drehung erweitern + Gesamtfläche 32×16
 - [ ] Zweites Panel anschließen (geplant GPIO 25/26, siehe [hardware.md](hardware.md))
 - [ ] Uhrzeit (Zeitserver), Wetter, Snake, DHT22 + Google-Tabelle
