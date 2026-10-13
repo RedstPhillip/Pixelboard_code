@@ -9,7 +9,9 @@ ESP32-Projekt (C++, Arduino-Framework): Die Klasse `Taster` aus dem Vorjahr wurd
 umgebaut (Taster + 2 Potentiometer).
 **Aktuelles Projekt: Pixelboard** (2 LED-Panels 8x32 + Joystick, siehe [anforderungen.md](documentation/anforderungen.md)).
 Entwicklung mit **VS Code + PlatformIO** (Kompilieren: `pio run`). Klassen je als `.h` + `.cpp` in `src/`
-(`Joystick`, `LedPanel`), Testprogramm in `src/main.cpp`.
+(`Joystick`, `LedPanel`, `Laufschrift`). Pro Aufgabe ein eigenes Hauptprogramm mit eigener PlatformIO-Umgebung:
+**Aufgabe 1** (Laufschrift) in `src/aufgabe1/main.cpp` → `env:aufgabe1`,
+**Aufgabe 2** (x/y-Koordinaten) in `src/aufgabe2/main.cpp` → `env:aufgabe2`.
 
 ## Was in den anderen Markdown-Dateien gespeichert wird
 

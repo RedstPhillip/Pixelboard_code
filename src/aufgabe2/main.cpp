@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
-// ---- Testprogramm x/y-Koordinaten (1 Panel an GPIO 16) ----
+// ---- Aufgabe 2: Testprogramm x/y-Koordinaten (1 Panel an GPIO 16) ----
+// Umgebung in PlatformIO: env:aufgabe2 (siehe documentation/platformio.md)
 // Prueft LedPanel::setzePixel(). Zwei Phasen in Endlosschleife (im Serial Monitor angekuendigt):
 //   0: Ecken      – (0,0) rot, (31,0) gruen, (0,7) blau, (31,7) weiss (5 s)
 //   1: Zeilenlauf – ein Punkt laeuft zeilenweise von links oben nach rechts unten
