@@ -1,0 +1,6 @@
+# PlatformIO: Build-Ausgabe und heruntergeladene Libraries
+.pio/
+
+# VS Code: automatisch erzeugte, rechnerspezifische Dateien
+.vscode/*
+!.vscode/extensions.json
