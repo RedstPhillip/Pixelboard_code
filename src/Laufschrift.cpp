@@ -6,12 +6,11 @@
 #include "Laufschrift.h"
 #include <FontMatrise.h>  // Schriftart 5x7 Pixel aus der LEDText-Bibliothek
 
-// Anzahl Leerzeichen vor dem Text, damit er rechts in ein leeres Panel hineinlaeuft
-// und der Rest des vorherigen Textes hinausgeschoben wird (32 Spalten / 6 Spalten pro Zeichen).
-static const uint8_t FUEHRENDE_LEERZEICHEN = 6;
-
-// Konstruktor: speichert nur die Laufgeschwindigkeit und setzt Startwerte (noch kein Hardwarezugriff).
-Laufschrift::Laufschrift(unsigned long schrittZeitMs) {
+// Konstruktor: legt den Streifen (1 oder 2 Panels) an, speichert die Laufgeschwindigkeit und setzt Startwerte.
+// Fuehrende Leerzeichen: so viele, dass der Text rechts in einen leeren Streifen hineinlaeuft und der Rest
+// des vorherigen Textes hinausgeschoben wird (Streifenbreite / 6 Spalten pro Zeichen + 1: 1 Panel 6, 2 Panels 11).
+Laufschrift::Laufschrift(unsigned long schrittZeitMs, uint8_t anzahlPanels) : streifen(anzahlPanels) {
+  fuehrendeLeerzeichen = streifen.Width() / 6 + 1;
   schrittZeit = schrittZeitMs;
   letzterSchrittZeit = 0;
   textLaenge = 0;
@@ -20,28 +19,28 @@ Laufschrift::Laufschrift(unsigned long schrittZeitMs) {
   textPuffer[0] = '\0';
 }
 
-// Liefert den LED-Speicher des Panels (Zeiger auf die erste LED) fuer FastLED.addLeds().
-CRGB* Laufschrift::getLeds() {
-  return matrix[0];
+// Liefert den LED-Speicher von Panel panelNr fuer FastLED.addLeds().
+CRGB* Laufschrift::getLeds(uint8_t panelNr) {
+  return streifen.getLeds(panelNr);
 }
 
-// Liefert die Anzahl der LEDs des Panels.
-int Laufschrift::getAnzahlLeds() {
-  return matrix.Size();
+// Legt fest, ob Panel panelNr um 180° gedreht eingebaut ist (Weitergabe an den Streifen).
+void Laufschrift::setGedreht(uint8_t panelNr, bool istGedreht) {
+  streifen.setGedreht(panelNr, istGedreht);
 }
 
-// Stellt Schriftart, Textbereich (ganzes Panel) und Textfarbe ein.
+// Stellt Schriftart, Textbereich (ganzer Streifen) und Textfarbe ein.
 void Laufschrift::begin(uint8_t rot, uint8_t gruen, uint8_t blau) {
   text.SetFont(MatriseFontData);
-  // Textbereich: ganze Breite, Schrifthoehe + 1 (= 8), Ursprung links unten
-  text.Init(&matrix, matrix.Width(), text.FontHeight() + 1, 0, 0);
+  // Textbereich: ganze Streifenbreite (32 oder 64), Schrifthoehe + 1 (= 8), Ursprung links unten
+  text.Init(&streifen, streifen.Width(), text.FontHeight() + 1, 0, 0);
   text.SetTextColrOptions(COLR_RGB | COLR_SINGLE, rot, gruen, blau);
 }
 
 // Kopiert den neuen Text (mit fuehrenden Leerzeichen) in den eigenen Puffer und startet den Durchlauf neu.
 void Laufschrift::setText(const char* neuerText) {
   textLaenge = 0;
-  for (uint8_t i = 0; i < FUEHRENDE_LEERZEICHEN; i++) {
+  for (uint8_t i = 0; i < fuehrendeLeerzeichen; i++) {
     textPuffer[textLaenge++] = ' ';
   }
   while (*neuerText != '\0' && textLaenge < MAX_TEXT_LAENGE) {
@@ -60,7 +59,7 @@ void Laufschrift::setText(const char* neuerText) {
 void Laufschrift::aendereText(const char* neuerText) {
   if (!textGesetzt) return;
 
-  for (uint16_t i = FUEHRENDE_LEERZEICHEN; i < textLaenge; i++) {
+  for (uint16_t i = fuehrendeLeerzeichen; i < textLaenge; i++) {
     if (*neuerText != '\0') {
       textPuffer[i] = *neuerText++;
     } else {
@@ -69,7 +68,8 @@ void Laufschrift::aendereText(const char* neuerText) {
   }
 }
 
-// Schiebt den Text alle schrittZeit ms um eine Spalte weiter und sendet das Bild an das Panel.
+// Schiebt den Text alle schrittZeit ms um eine Spalte weiter und sendet das Bild an die Panels
+// (FastLED.show() sendet an alle angemeldeten Panels).
 void Laufschrift::update() {
   if (!textGesetzt) return;
 

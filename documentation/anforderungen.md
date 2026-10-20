@@ -29,6 +29,7 @@ Zurück zur [Übersicht](index.md).
 
 **Status:** Beide Aufgaben für 1 Panel umgesetzt, jede mit eigenem Hauptprogramm:
 Aufgabe 1 in `src/aufgabe1/main.cpp` (Klasse `Laufschrift`), Aufgabe 2 in `src/aufgabe2/main.cpp` (`LedPanel::setzePixel`).
+Aufgabe 1 für **2 Panels** umgesetzt (Hardwaretest offen).
 
 ## Erstes Mini-Projekt: Joystick-Klasse (abgeschlossen)
 
@@ -61,6 +62,7 @@ Ein Joystick besteht aus:
 | 2026-10-13 | Pixelboard | Vorerst nur `main.cpp` bearbeiten: Testprogramm für **ein** Panel an GPIO 16. FastLED fest auf **3.7.8** (3.10.x kompiliert nicht) |
 | 2026-10-13 | Aufteilung Aufgaben | Projekte von Philipp (Aufgabe 2) und Dominika (Aufgabe 1) zusammengeführt. Jede Aufgabe hat ein eigenes Hauptprogramm (`src/aufgabe1/`, `src/aufgabe2/`) und eine eigene PlatformIO-Umgebung (`env:aufgabe1`, `env:aufgabe2`, per `build_src_filter`); Klassen gemeinsam in `src/` |
 | 2026-10-13 | Aufgabe 1 | Klasse `Laufschrift` nutzt **LEDMatrix** (Umrechnung) + **LEDText** (Laufschrift), unabhängig von `LedPanel`. Text „Zeit: X s“, grün, 50 ms pro Spalte; die Zahl zählt jede Sekunde **während** des Durchlaufs hoch (`aendereText()`), Text fest 12 Zeichen lang |
+| 2026-10-20 | Aufgabe 1, 2 Panels | Text läuft **zuerst über das obere Panel und dann unten weiter** (Wunsch Dominika). Umsetzung: beide Panels als ein Streifen 64×8 (neue Klasse `PanelStreifen`, Unterklasse von `cLEDMatrixBase`), x 0..31 = unten, 32..63 = oben. Pins: oben **25**, unten **26** (verkabelt). Oberes Panel als gedreht angenommen (Anschluss zeigt nach unten, das bisher getestete Panel hat LED 0 links oben = Anschluss oben → unteres Panel); per Konstante `OBEN_GEDREHT`/`UNTEN_GEDREHT` umstellbar. Umschalten 1/2 Panels mit `ANZAHL_PANELS` |
 | 2026-10-13 | Upload-Port | `upload_port`/`monitor_port` nicht mehr fest (COM6), sondern automatische Erkennung – der Port ist auf jedem PC anders |
 
 ## Offene Fragen (erst bei Bedarf klären)

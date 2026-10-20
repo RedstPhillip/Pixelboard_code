@@ -30,15 +30,16 @@ Zurück zur [Übersicht](index.md).
 - [x] 2026-10-13 – Projekte zusammengeführt: `src/aufgabe1/main.cpp` (Laufschrift) und `src/aufgabe2/main.cpp` (x/y),
       je eigene PlatformIO-Umgebung; Upload-Port automatisch statt COM6; Build beider Umgebungen ✅ (T8)
 
+- [x] 2026-10-20 – Aufgabe 1 für **2 Panels**: neue Klasse `PanelStreifen` (2 Panels als 64×8-Streifen, 180°-Drehung),
+      `Laufschrift` umgebaut (Panelanzahl wählbar); Text läuft oben, dann unten weiter; Build beider Umgebungen ✅ (T9a, T9b)
+
 ## Offen
 
 ### Pixelboard
 - [ ] Test T7a durchführen (korrigierte y-Richtung)
-- [ ] Test T8 durchführen (Aufgabe 1 an GPIO 16)
-- [ ] Aufgabe 1 für **2 Panels**: zweites `Laufschrift`-Objekt; dabei beachten: `update()` ruft `FastLED.show()` auf
-      und sendet damit alle Panels; oberes Panel 180° gedreht (Vorzeichen von Breite **und** Höhe umkehren)
+- [ ] Tests T9a (1 Panel an GPIO 26) und T9b (2 Panels) durchführen – T9a ersetzt T8 (GPIO 16)
 - [ ] Aufgabe 2 für **2 Panels**: zweites Panel (180° gedreht) – z. B. `LedPanel` um Drehung erweitern + Gesamtfläche 32×16
-- [ ] Zweites Panel anschließen (geplant GPIO 25/26, siehe [hardware.md](hardware.md))
+- [ ] Aufgabe 2 (`src/aufgabe2/main.cpp`) nutzt noch GPIO 16 – auf 25/26 umstellen, wenn Aufgabe 2 für 2 Panels gebaut wird
 - [ ] Uhrzeit (Zeitserver), Wetter, Snake, DHT22 + Google-Tabelle
 
 ### Sonstiges
