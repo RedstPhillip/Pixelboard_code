@@ -64,7 +64,8 @@ Objekt im Testprogramm: `joystick(14, 34, 35)`.
 
 ## Klasse `LedPanel` (`src/LedPanel.h`, `src/LedPanel.cpp`)
 
-Ein LED-Panel 32×8 (WS2812, Vertical Zig-Zag) mit x/y-Koordinatensystem: (0,0) = links oben, x nach rechts, y nach unten.
+**Ein** LED-Panel 32×8 (WS2812, Vertical Zig-Zag) mit x/y-Koordinatensystem: (0,0) = links oben, x nach rechts, y nach unten –
+so, wie man das Panel eingebaut von vorne sieht. Ein um 180° gedrehtes Panel (`gedreht = true`) wird in `xyZuIndex` in x und y gespiegelt.
 
 ```mermaid
 classDiagram
@@ -73,8 +74,9 @@ classDiagram
     +static const int HOEHE = 8
     +static const int ANZAHL = 256
     -CRGB leds[ANZAHL]
+    -bool gedreht
     -xyZuIndex(int x, int y) int
-    +LedPanel()
+    +LedPanel(bool gedreht180 = false)
     +begin~PIN~() void
     +setzePixel(int x, int y, CRGB farbe) void
     +loeschen() void
@@ -82,7 +84,43 @@ classDiagram
   }
 ```
 
-Objekt im Testprogramm: `panel`, angemeldet mit `panel.begin<16>()`.
+Wird seit 2026-10-20 nicht mehr direkt im Testprogramm verwendet, sondern über `Pixelboard`.
+
+## Klasse `Pixelboard` (`src/Pixelboard.h`, `src/Pixelboard.cpp`) – Aufgabe 2, 2 Panels
+
+Zwei Panels übereinander als **eine** Fläche 32×16: (0,0) = links oben, x 0..31 nach rechts, y 0..15 nach unten.
+y 0..7 → `oben`, y 8..15 → `unten` (lokal y − 8). Spiele brauchen nur diese Klasse.
+
+```mermaid
+classDiagram
+  class Pixelboard {
+    +static const int BREITE = 32
+    +static const int HOEHE = 16
+    +static const uint8_t PIN_OBEN_STANDARD = 25
+    +static const uint8_t PIN_UNTEN_STANDARD = 26
+    +static const uint8_t HELLIGKEIT_STANDARD = 20
+    +static const uint32_t MAX_STROM_MA = 500
+    -LedPanel oben
+    -LedPanel unten
+    +Pixelboard(bool obenGedreht = false, bool untenGedreht = true)
+    +begin~PIN_OBEN = 25, PIN_UNTEN = 26~() void
+    +setHelligkeit(uint8_t helligkeit) void
+    +setzePixel(int x, int y, CRGB farbe) void
+    +loeschen() void
+    +anzeigen() void
+  }
+  Pixelboard *-- "2" LedPanel : Komposition
+```
+
+`begin()` meldet beide Panels an, setzt Strombegrenzung (500 mA) und Helligkeit (20) und löscht die Anzeige.
+
+Benutzung (Objekt in Aufgabe 2):
+```cpp
+Pixelboard board;                    // Standard-Aufbau: oben nicht gedreht, unten gedreht
+board.begin();                       // in setup(): Pins 25/26 (andere: board.begin<PIN_OBEN, PIN_UNTEN>())
+board.setzePixel(5, 12, CRGB::Red);  // x 0..31, y 0..15
+board.anzeigen();
+```
 
 ## Klasse `Laufschrift` (`src/Laufschrift.h`, `src/Laufschrift.cpp`) – Aufgabe 1
 

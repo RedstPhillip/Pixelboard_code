@@ -23,8 +23,10 @@ Taster/
 ├── src/
 │   ├── Joystick.h       Klasse Joystick – Deklaration (Attribute, Methodenköpfe)
 │   ├── Joystick.cpp     Klasse Joystick – Implementierung der Methoden
-│   ├── LedPanel.h       Klasse LedPanel – Deklaration (ein Panel 32x8, x/y-Koordinaten)
+│   ├── LedPanel.h       Klasse LedPanel – Deklaration (ein Panel 32x8, x/y-Koordinaten, optional 180° gedreht)
 │   ├── LedPanel.cpp     Klasse LedPanel – Implementierung (Umrechnung x/y → LED-Index)
+│   ├── Pixelboard.h     Klasse Pixelboard – Deklaration (2 Panels als Fläche 32x16)
+│   ├── Pixelboard.cpp   Klasse Pixelboard – Implementierung
 │   ├── Laufschrift.h    Klasse Laufschrift – Deklaration (Text über 1 oder 2 Panels, LEDText)
 │   ├── Laufschrift.cpp  Klasse Laufschrift – Implementierung
 │   ├── PanelStreifen.h  Klasse PanelStreifen – Deklaration (2 Panels als ein 64×8-Streifen, 180°-Drehung)
@@ -44,6 +46,6 @@ Taster/
 
 Siehe [todo.md](todo.md). Kurzfassung: Joystick-Mini-Projekt abgeschlossen. Neues **Projekt Pixelboard**:
 Libraries installiert und getestet. Aufgabe 1 (Laufschrift, Version für **2 Panels** umgesetzt – oben, dann unten
-weiter; Tests T9a/T9b offen), Aufgabe 2 (x/y-Methode, Klasse `LedPanel`, Test T7a offen) und Aufgabe 3
-(Snake, Klasse `Snake`, Test T10 offen).
-Danach: Aufgabe 2 für 2 Panels (oberes 180° gedreht).
+weiter; Tests T9a/T9b offen), Aufgabe 2 (x/y-Methode, für **2 Panels** über Klasse `Pixelboard`, Test T12b bestanden) und
+Aufgabe 3 (Snake, Klasse `Snake`, 1 Panel an GPIO 16, Test T10 offen).
+Danach: Snake auf `Pixelboard` (2 Panels), Uhrzeit, Wetter, DHT22.

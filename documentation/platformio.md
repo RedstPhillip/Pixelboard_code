@@ -10,7 +10,7 @@ Taster/                  ← diesen Ordner in VS Code öffnen (Datei → Ordner 
 ├── src/aufgabe1/main.cpp  Hauptprogramm Aufgabe 1 (Laufschrift) – nur in env:aufgabe1
 ├── src/aufgabe2/main.cpp  Hauptprogramm Aufgabe 2 (x/y-Koordinaten) – nur in env:aufgabe2
 ├── src/aufgabe3/main.cpp  Hauptprogramm Aufgabe 3 (Snake) – nur in env:aufgabe3
-├── src/*.h / src/*.cpp    Klassen (Joystick, LedPanel, Laufschrift, PanelStreifen, Snake), werden von den Umgebungen mitkompiliert
+├── src/*.h / src/*.cpp    Klassen (Joystick, LedPanel, Pixelboard, Laufschrift, PanelStreifen, Snake), werden von den Umgebungen mitkompiliert
 └── .pio/                Build-Ausgabe, wird automatisch erzeugt – nicht bearbeiten
 ```
 

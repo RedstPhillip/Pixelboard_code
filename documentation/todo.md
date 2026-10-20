@@ -32,16 +32,20 @@ Zurück zur [Übersicht](index.md).
 - [x] 2026-10-20 – Aufgabe 1 für **2 Panels**: neue Klasse `PanelStreifen` (2 Panels als 64×8-Streifen, 180°-Drehung),
       `Laufschrift` umgebaut (Panelanzahl wählbar); Text läuft oben, dann unten weiter; Build beider Umgebungen ✅ (T9a, T9b)
 - [x] 2026-10-20 – Aufgabe 3: Snake-Spiel hinzugefügt (`src/aufgabe3/main.cpp`, Klasse `Snake.h`/`.cpp`, `env:aufgabe3`)
+- [x] 2026-10-20 – Aufgabe 2 für 2 Panels: `LedPanel` um 180°-Drehung erweitert, neue Klasse `Pixelboard` (Fläche 32×16,
+      zwei `LedPanel`), Testprogramm auf GPIO 25/26 umgestellt; Build beider Umgebungen ✅ (T12). T7a/T8a (1 Panel an GPIO 16) entfallen
+- [x] 2026-10-20 – Defekt oberes Panel (letzte ~40 LEDs) als Hardwarefehler gefunden und behoben (T13); Aufgabe 2 auf 2 Panels läuft (T12b)
+- [x] 2026-10-20 – `Pixelboard` aufgeräumt: `begin()` ohne Parameter (Pins 25/26), Helligkeit + Strombegrenzung in der Klasse,
+      `setHelligkeit()`; Testprogramm ohne Diagnose-Phase; Build aufgabe1/2/3 ✅ (T14)
 
 ## Offen
 
 ### Pixelboard
-- [ ] Test T7a durchführen (korrigierte y-Richtung)
 - [ ] Tests T9a (1 Panel an GPIO 26) und T9b (2 Panels) durchführen – T9a ersetzt T8 (GPIO 16)
 - [ ] Test T10 durchführen (Snake, 1 Panel an GPIO 16)
-- [ ] Aufgabe 2 für **2 Panels**: zweites Panel (180° gedreht) – z. B. `LedPanel` um Drehung erweitern + Gesamtfläche 32×16
-- [ ] Aufgabe 2 (`src/aufgabe2/main.cpp`) nutzt noch GPIO 16 – auf 25/26 umstellen, wenn Aufgabe 2 für 2 Panels gebaut wird
-- [ ] Uhrzeit (Zeitserver), Wetter, Snake für 2 Panels, DHT22 + Google-Tabelle
+- [ ] Aufgabe 1: Drehung prüfen/umstellen (laut T12/T12a: oben nicht gedreht, unten gedreht)
+- [ ] Snake auf 2 Panels umstellen (Klasse `Pixelboard` statt `LedPanel`)
+- [ ] Uhrzeit (Zeitserver), Wetter, DHT22 + Google-Tabelle
 
 ### Sonstiges
 
