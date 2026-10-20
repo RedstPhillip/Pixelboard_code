@@ -263,3 +263,17 @@ classDiagram
 
 Aufgabe 3 (`src/aufgabe3/main.cpp`): `Pixelboard board`, `Joystick joystick(14, 34, 35)`, `Snake snake`.
 Steuerung: stärker ausgelenkte Achse zählt (Totzone 1500–2500), kurzer Tastendruck = Neustart nach Game Over.
+
+## FreeRTOS-Tasks in Aufgabe 3 (`src/aufgabe3/main.cpp`)
+
+Aufgabe 3 läuft mit **zwei Tasks** statt im Arduino-`loop()`:
+
+| Task | Priorität | Stack | Aufgabe |
+|---|---|---|---|
+| `tasterTask` | 2 | 2048 Byte | liest alle 10 ms Taster und Achsen (`joystick.check()`) und merkt kurze Tastendrücke in `volatile bool neustartAngefordert` |
+| `spielTask` | 1 | 4096 Byte | wertet die Achsen aus, bewegt die Schlange und zeichnet auf das `Pixelboard`; startet nach Game Over neu, wenn ein Tastendruck vorgemerkt ist |
+
+Kommunikation: nur `neustartAngefordert` (gesetzt vom Taster-Task, gelesen und zurückgesetzt vom Spiel-Task).
+`Snake` und `Pixelboard` werden ausschließlich vom Spiel-Task benutzt, daher ist kein Mutex nötig.
+`setup()` startet beide Tasks; `loop()` beendet den Arduino-Task mit `vTaskDelete(NULL)`.
+FreeRTOS gehört beim ESP32-Arduino-Framework dazu (keine zusätzliche Bibliothek).

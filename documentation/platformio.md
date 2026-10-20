@@ -40,6 +40,9 @@ Build automatisch nach `.pio/libdeps/` herunter (nicht von Hand bearbeiten). Akt
 | `https://github.com/AaronLiddiment/LEDMatrix` | direkt von GitHub (nicht in der Registry) |
 | `https://github.com/AaronLiddiment/LEDText` | direkt von GitHub (nicht in der Registry) |
 
+**FreeRTOS** (`xTaskCreate`, `vTaskDelay`, `vTaskDelete`) ist beim ESP32-Arduino-Framework bereits dabei –
+für Aufgabe 3 ist keine zusätzliche Bibliothek in `lib_deps` nötig.
+
 ## Schritt für Schritt: Programm auf den ESP32 bringen
 
 1. VS Code → *Datei → Ordner öffnen* → Ordner `Taster` (der mit `platformio.ini`).

@@ -43,11 +43,14 @@ Zurück zur [Übersicht](index.md).
       entfernt, keine Umkehr bei schnellen Eingaben), Snake-Hauptprogramm ohne Diagnose-Ausgabe und ohne `delay()`,
       Joystick-Auswertung nach stärker ausgelenkter Achse; Aufgabe 1 Drehung korrigiert (oben nicht, unten gedreht);
       veraltete Doku (GPIO 16, externer Joystick, Joystick-Fragen) entfernt; Build aufgabe1/2/3 ✅ (T16)
+- [x] 2026-10-20 – Snake-Hauptprogramm mit **FreeRTOS**: zwei Tasks (`tasterTask` Priorität 2, `spielTask`
+      Priorität 1), Kommunikation über `volatile bool neustartAngefordert`; Build ✅ (T17)
 
 ## Offen
 
 ### Pixelboard
 - [ ] Test T16 durchführen (Snake nach dem Aufräumen) und T9b (Aufgabe 1 auf 2 Panels, Drehung korrigiert)
+- [ ] Test T17 durchführen (Snake mit FreeRTOS, zwei Tasks)
 - [ ] Uhrzeit (Zeitserver), Wetter (Temperatur), DHT22 + Google-Tabelle
 - [ ] Optional: Tetris, zweiter Joystick
 

@@ -38,7 +38,7 @@ Taster/
 │   ├── aufgabe2/
 │   │   └── main.cpp     Aufgabe 2: Testprogramm x/y-Koordinaten (Pixelboard, 2 Panels) → env:aufgabe2
 │   └── aufgabe3/
-│       └── main.cpp     Aufgabe 3: Snake-Spiel mit Joystick (Pixelboard 32x16) → env:aufgabe3
+│       └── main.cpp     Aufgabe 3: Snake-Spiel mit Joystick, 2 FreeRTOS-Tasks (Pixelboard 32x16) → env:aufgabe3
 └── documentation/       Diese Dokumentation
 ```
 
@@ -46,4 +46,4 @@ Taster/
 
 Siehe [todo.md](todo.md). Kurzfassung: Joystick-Mini-Projekt abgeschlossen. **Projekt Pixelboard** (2 Panels, 32×16):
 Aufgabe 1 (Laufschrift über beide Panels), Aufgabe 2 (x/y-Koordinaten, Klasse `Pixelboard`) und Aufgabe 3 (Snake mit
-Joystick) laufen. Als Nächstes: Uhrzeit, Wetter, DHT22 + Google-Tabelle.
+Joystick, jetzt mit **FreeRTOS**: Taster-Task + Spiel-Task) laufen. Als Nächstes: Uhrzeit, Wetter, DHT22 + Google-Tabelle.
