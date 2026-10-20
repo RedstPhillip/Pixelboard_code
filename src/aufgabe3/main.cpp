@@ -1,111 +1,79 @@
 //////////////////////////////////////////////
-// ---- Aufgabe 3: Snake-Spiel (1 Panel an GPIO 16) ----
+// ---- Aufgabe 3: Snake auf dem Pixelboard 32x16 (2 Panels, oben GPIO 25, unten GPIO 26) ----
 // Umgebung in PlatformIO: env:aufgabe3 (siehe documentation/platformio.md)
-// Steuerung mit Joystick (SW 14, X 34, Y 35):
-//   X-Achse -> links/rechts
-//   Y-Achse -> hoch/runter (je nach Verdrahtung, wird per Schwellwert ausgewertet)
-//   Taster (kurz) -> Neustart nach Game Over
-// Koordinaten: (0,0) = links oben, x nach rechts, y nach unten.
+// Steuerung mit Joystick (SW 14, X 34, Y 35, siehe documentation/hardware.md):
+//   Stick links/rechts/oben/unten -> Richtung der Schlange
+//   Stick kurz druecken           -> Neustart nach Game Over
+// Die Schlange faehrt von selbst; Futter (orange) macht sie laenger und schneller.
 //////////////////////////////////////////////
 
 #include <Arduino.h>
-#include <FastLED.h>
-#include "LedPanel.h"
+#include "Pixelboard.h"
 #include "Joystick.h"
 #include "Snake.h"
 
-#define PANEL_PIN 16
-
-// Joystick-Pins wie in hardware.md
+// ---- Joystick (siehe documentation/hardware.md) ----
 #define JOY_SW 14
 #define JOY_X  34
 #define JOY_Y  35
 
-const uint8_t HELLIGKEIT = 20;
-const uint32_t MAX_STROM_MA = 500;
+// Totzone um die Ruhestellung (ca. 1800..2000): erst ausserhalb davon zaehlt eine Auslenkung
+const int SCHWELLE_KLEIN = 1500;   // darunter: links bzw. oben
+const int SCHWELLE_GROSS = 2500;   // darueber: rechts bzw. unten
 
-LedPanel panel;
+Pixelboard board;
 Joystick joystick(JOY_SW, JOY_X, JOY_Y);
-Snake snake(32, 8);
+Snake snake;
 
-// Schwellwerte fuer Richtungswechsel (Rohwerte 0..4095).
-// Gemessene Ruhestellung des Joysticks liegt bei ca. 1800..2000 (Test T1),
-// daher asymmetrische Schwellen statt "Mitte 2048".
-const int SCHWELLE_UNTEN = 1500; // kleiner = links/oben
-const int SCHWELLE_OBEN = 2500;  // groesser = rechts/unten
-
-unsigned long letzterRichtungsWechsel = 0;
-const unsigned long RICHTUNG_DELAY_MS = 80;
-
-void richteNachJoystick() {
-  if (millis() - letzterRichtungsWechsel < RICHTUNG_DELAY_MS) return;
-
+// Liest den Joystick und gibt die Richtung an die Schlange weiter.
+// Gewertet wird die Achse, die weiter aus der Mitte ausgelenkt ist – so funktioniert auch schraeges Druecken.
+// In der Totzone passiert nichts (Schlange faehrt geradeaus weiter).
+void richtungVomJoystick() {
+  const int MITTE = 2048;
   int x = joystick.getX();
   int y = joystick.getY();
+  bool xAusgelenkt = (x < SCHWELLE_KLEIN || x > SCHWELLE_GROSS);
+  bool yAusgelenkt = (y < SCHWELLE_KLEIN || y > SCHWELLE_GROSS);
 
-  // Rechts
-  if (x > SCHWELLE_OBEN) {
-    snake.setzeRichtung(0); // rechts
-    letzterRichtungsWechsel = millis();
-    return;
-  }
-  // Links
-  if (x < SCHWELLE_UNTEN) {
-    snake.setzeRichtung(2); // links
-    letzterRichtungsWechsel = millis();
-    return;
-  }
-  // Unten (je nach Hardware kann Y invertiert sein; pruefen)
-  if (y > SCHWELLE_OBEN) {
-    snake.setzeRichtung(1); // unten
-    letzterRichtungsWechsel = millis();
-    return;
-  }
-  // Oben
-  if (y < SCHWELLE_UNTEN) {
-    snake.setzeRichtung(3); // oben
-    letzterRichtungsWechsel = millis();
-    return;
+  if (xAusgelenkt && (!yAusgelenkt || abs(x - MITTE) >= abs(y - MITTE))) {
+    snake.setzeRichtung(x > SCHWELLE_GROSS ? Snake::RECHTS : Snake::LINKS);
+  } else if (yAusgelenkt) {
+    snake.setzeRichtung(y > SCHWELLE_GROSS ? Snake::UNTEN : Snake::OBEN);
   }
 }
 
 void setup() {
   Serial.begin(115200);
   randomSeed(micros());
-
-  panel.begin<PANEL_PIN>();
-  FastLED.setBrightness(HELLIGKEIT);
-  FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_STROM_MA);
-
+  board.begin();
   joystick.begin();
-  snake.init(16, 4);
-
-  Serial.println("Snake gestartet. Mit Joystick steuern. Taster kurz fuer Neustart nach Game Over.");
+  snake.neustart();
+  Serial.println("Snake gestartet. Joystick lenkt, kurz druecken = Neustart nach Game Over.");
 }
 
 void loop() {
   joystick.check();
 
   if (snake.istGameOver()) {
-    // Game Over anzeigen: alles kurz rot blinken? oder nur stehen lassen
-    panel.loeschen();
-    // einfach Snake in Rot zeichnen
-    snake.zeichnen(panel, CRGB::Red, CRGB::Red);
-    panel.anzeigen();
-    // Neustart mit kurzem Tastendruck
     if (joystick.tasterWurdeKurzGedrueckt()) {
-      snake.init(16, 4);
+      snake.neustart();
       Serial.println("Neustart");
     }
-    delay(10);
-    return;
+  } else {
+    joystick.tasterWurdeKurzGedrueckt();   // Tastendruecke waehrend des Spiels verwerfen
+    richtungVomJoystick();
+    snake.bewegen();
+    if (snake.istGameOver()) {
+      Serial.print("Game Over – Laenge ");
+      Serial.println(snake.getLaenge());
+    }
   }
 
-  richteNachJoystick();
-  snake.bewegen();
-  panel.loeschen();
-  snake.zeichnen(panel, CRGB::Green, CRGB::Orange);
-  panel.anzeigen();
-  delay(1);
+  board.loeschen();
+  if (snake.istGameOver()) {
+    snake.zeichnen(board, CRGB::Red, CRGB::Red);
+  } else {
+    snake.zeichnen(board, CRGB::Green, CRGB::Orange);
+  }
+  board.anzeigen();
 }
-

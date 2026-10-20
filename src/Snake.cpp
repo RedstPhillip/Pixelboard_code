@@ -1,147 +1,112 @@
 //////////////////////////////////////////////
 // ---- Snake-Klasse (Implementierung) ----
-// Deklaration: Snake.h
+// Deklaration und Benutzung: Snake.h
 //////////////////////////////////////////////
 
 #include "Snake.h"
-#include "LedPanel.h"
 
-Snake::Snake(int b, int h) {
-  breite = b;
-  hoehe = h;
+// Konstruktor: legt das Spiel an, ohne es zu starten (noch kein Hardwarezugriff).
+Snake::Snake() {
   laenge = 0;
-  richtung = 0;
-  naechsteRichtung = 0;
-  futterVorhanden = false;
-  gameOver = false;
-  gestartet = false;
-  letzteBewegung = 0;
-  geschwindigkeitMs = 150;
-  futter.x = 0; futter.y = 0;
-  // koerper initial leer
+  richtung = RECHTS;
+  naechsteRichtung = RECHTS;
+  futter = { 0, 0 };
+  gameOver = true;   // bis neustart() aufgerufen wird
+  tempoMs = START_TEMPO_MS;
+  letzterSchritt = 0;
 }
 
-void Snake::init(int startX, int startY) {
-  laenge = 3;
-  // Schlange waagerecht nach rechts, Kopf an (startX,startY)
+// Startet ein neues Spiel: Schlange (3 Glieder) waagerecht in der Mitte, Kopf rechts, faehrt nach rechts.
+void Snake::neustart() {
+  laenge = START_LAENGE;
   for (int i = 0; i < laenge; i++) {
-    koerper[i].x = startX - i; // i==0 Kopf
-    koerper[i].y = startY;
+    koerper[i] = { BREITE / 2 - i, HOEHE / 2 };
   }
-  richtung = 0;        // rechts
-  naechsteRichtung = 0;
+  richtung = RECHTS;
+  naechsteRichtung = RECHTS;
   gameOver = false;
-  gestartet = true;
-  letzteBewegung = millis();
-  futterVorhanden = false;
-  erzeugeFutter();
+  tempoMs = START_TEMPO_MS;
+  letzterSchritt = millis();
+  neuesFutter();
 }
 
-void Snake::erzeugeFutter() {
-  // versuche, freies Feld zu finden
-  int versuche = 0;
-  while (versuche < 500) {
-    int fx = random(0, breite);
-    int fy = random(0, hoehe);
-    // pruefe, ob auf Schlange
-    bool aufSchlange = false;
-    for (int i = 0; i < laenge; i++) {
-      if (koerper[i].x == fx && koerper[i].y == fy) { aufSchlange = true; break; }
-    }
-    if (!aufSchlange) {
-      futter.x = fx; futter.y = fy;
-      futterVorhanden = true;
-      return;
-    }
-    versuche++;
+// Liefert true, wenn der Punkt (x, y) von der Schlange belegt ist.
+bool Snake::istAufSchlange(int x, int y) {
+  for (int i = 0; i < laenge; i++) {
+    if (koerper[i].x == x && koerper[i].y == y) return true;
   }
-  // falls kein freies Feld gefunden (sehr unwahrscheinlich)
-  futterVorhanden = false;
+  return false;
 }
 
-// Setzt die naechste Richtung. Direkte Umkehr (z. B. rechts -> links) wird ignoriert.
-void Snake::setzeRichtung(int neueRichtung) {
-  if (neueRichtung < 0) neueRichtung = 0;
-  if (neueRichtung > 3) neueRichtung = 3;
-  // Gegenrichtung von naechsteRichtung ignorieren
-  if ((naechsteRichtung + 2) % 4 == neueRichtung) return;
+// Setzt das Futter auf ein zufaelliges freies Feld (so lange wuerfeln, bis es nicht auf der Schlange liegt).
+void Snake::neuesFutter() {
+  do {
+    futter = { (int)random(BREITE), (int)random(HOEHE) };
+  } while (istAufSchlange(futter.x, futter.y));
+}
+
+// Merkt sich die naechste Richtung. Direkte Umkehr wird ignoriert, weil die Schlange sonst in sich selbst faehrt.
+// Verglichen wird mit der aktuellen Richtung (nicht mit naechsteRichtung), damit zwei schnelle Eingaben
+// innerhalb eines Schritts (z. B. oben, dann links) keine Umkehr erlauben.
+void Snake::setzeRichtung(Richtung neueRichtung) {
+  if ((richtung + 2) % 4 == neueRichtung) return;
   naechsteRichtung = neueRichtung;
 }
 
+// Bewegt die Schlange um ein Feld, sobald tempoMs vergangen ist.
 void Snake::bewegen() {
-  if (!gestartet || gameOver) return;
-  if (millis() - letzteBewegung < geschwindigkeitMs) return;
-  letzteBewegung = millis();
-
+  if (gameOver || millis() - letzterSchritt < tempoMs) return;
+  letzterSchritt = millis();
   richtung = naechsteRichtung;
 
-  // neuen Kopf berechnen
-  int kopfX = koerper[0].x;
-  int kopfY = koerper[0].y;
-  int nx = kopfX;
-  int ny = kopfY;
-  if (richtung == 0) nx = kopfX + 1; // rechts
-  if (richtung == 1) ny = kopfY + 1; // unten
-  if (richtung == 2) nx = kopfX - 1; // links
-  if (richtung == 3) ny = kopfY - 1; // oben
+  // neuer Kopf
+  Punkt kopf = koerper[0];
+  switch (richtung) {
+    case RECHTS: kopf.x++; break;
+    case UNTEN:  kopf.y++; break;
+    case LINKS:  kopf.x--; break;
+    case OBEN:   kopf.y--; break;
+  }
 
-  // Kollision mit Wand?
-  if (nx < 0 || nx >= breite || ny < 0 || ny >= hoehe) {
+  // Kollision mit Wand oder eigenem Koerper
+  if (kopf.x < 0 || kopf.x >= BREITE || kopf.y < 0 || kopf.y >= HOEHE || istAufSchlange(kopf.x, kopf.y)) {
     gameOver = true;
     return;
   }
 
-  // Kollision mit eigenem Koerper?
-  for (int i = 0; i < laenge; i++) {
-    if (koerper[i].x == nx && koerper[i].y == ny) {
-      gameOver = true;
-      return;
-    }
-  }
-
-  // pruefen, ob Futter gefressen wird
-  bool frisst = false;
-  if (futterVorhanden && nx == futter.x && ny == futter.y) {
-    frisst = true;
-  }
-
-  // Koerper verschieben: von hinten nach vorne.
-  // Beim Fressen wird das letzte Glied verdoppelt, bevor geschoben wird –
-  // sonst wuerde ein ungueltiger Speicherwert gezeichnet.
-  if (frisst && laenge < MAX_KOERPER) {
+  // Beim Fressen waechst die Schlange: das letzte Glied bleibt stehen (wird vor dem Verschieben verdoppelt)
+  bool frisst = (kopf.x == futter.x && kopf.y == futter.y);
+  if (frisst && laenge < MAX_LAENGE) {
     koerper[laenge] = koerper[laenge - 1];
     laenge++;
   }
+
+  // Koerper von hinten nach vorne nachziehen, dann neuen Kopf setzen
   for (int i = laenge - 1; i > 0; i--) {
     koerper[i] = koerper[i - 1];
   }
-  koerper[0].x = nx;
-  koerper[0].y = ny;
+  koerper[0] = kopf;
 
   if (frisst) {
-    // neues Futter erzeugen
-    erzeugeFutter();
-    // leicht schneller werden (optional)
-    if (geschwindigkeitMs > 80) geschwindigkeitMs -= 2;
+    if (tempoMs > MIN_TEMPO_MS) tempoMs -= BESCHLEUNIGUNG_MS;
+    if (laenge < MAX_LAENGE) neuesFutter();
   }
 }
 
-void Snake::zeichnen(class LedPanel &panel, CRGB schlangeFarbe, CRGB futterFarbe) {
-  if (!gestartet) return;
-  // Schlange zeichnen
+// Zeichnet Schlange und Futter auf das Pixelboard. Sichtbar erst nach board.anzeigen().
+void Snake::zeichnen(Pixelboard &board, CRGB schlangeFarbe, CRGB futterFarbe) {
   for (int i = 0; i < laenge; i++) {
-    panel.setzePixel(koerper[i].x, koerper[i].y, schlangeFarbe);
+    board.setzePixel(koerper[i].x, koerper[i].y, schlangeFarbe);
   }
-  // Futter zeichnen
-  if (futterVorhanden) {
-    panel.setzePixel(futter.x, futter.y, futterFarbe);
-  }
-  // Game Over: Kopf kurz andersfarbig markieren (optional) – hier nicht noetig
+  board.setzePixel(futter.x, futter.y, futterFarbe);
 }
 
-bool Snake::istGameOver() { return gameOver; }
-bool Snake::istGestartet() { return gestartet; }
-int Snake::getLaenge() { return laenge; }
-unsigned long Snake::getGeschwindigkeitMs() { return geschwindigkeitMs; }
-void Snake::setzeGeschwindigkeitMs(unsigned long v) { if (v >= 50) geschwindigkeitMs = v; }
+// Liefert true nach einer Wand- oder Selbstkollision.
+bool Snake::istGameOver() {
+  return gameOver;
+}
 
+// Liefert die aktuelle Laenge der Schlange.
+int Snake::getLaenge() {
+  return laenge;
+}

@@ -20,27 +20,26 @@ Bei jeder Änderung an Verkabelung oder Pins wird sie von der KI selbständig ak
 | GND | Joystick GND | – |
 | 34 | Joystick X | ADC1, nur Eingang, kein interner Pull-up/-down |
 | 35 | Joystick Y | ADC1, nur Eingang, kein interner Pull-up/-down |
-| 16 | Data-Pin LED-Panel (1 Panel zum Testen; nur noch Aufgabe 3 (Snake) – Aufgabe 1 und 2 nutzen 25/26) | Ausgang; bei ESP32-WROVER-Modulen für PSRAM belegt, beim WROOM (esp32dev) frei |
-| 25 | Data-Pin **oberes** LED-Panel (verkabelt, Aufgabe 1 und 2) | Ausgang (ADC2-Pin, als digitaler Ausgang unproblematisch) |
-| 26 | Data-Pin **unteres** LED-Panel (verkabelt, Aufgabe 1 und 2) | Ausgang (ADC2-Pin, als digitaler Ausgang unproblematisch) |
+| 25 | Data-Pin **oberes** LED-Panel | Ausgang (ADC2-Pin, als digitaler Ausgang unproblematisch) |
+| 26 | Data-Pin **unteres** LED-Panel | Ausgang (ADC2-Pin, als digitaler Ausgang unproblematisch) |
 | 13 (?) | DHT22 Data | **noch auszuprobieren** |
 
-Ursprünglich geplant, aber **nicht angeschlossen** (nur ein Joystick vorhanden): Ext. Joystick X 32, Y 33, SW 27 – diese Pins sind frei.
+Freie ADC1-Pins (z. B. für einen zweiten Joystick): 32, 33, 36 (SVP), 39 (SVN).
 
 ## LED-Panels
 
 - 2× 8×32 LEDs, Typ **WS2812** (Farbreihenfolge GRB), Anordnung **Vertical Zig-Zag**
 - Jedes Panel an einem **eigenen** Data-Pin (nicht hintereinander gehängt)
-- **Verdrahtung (Panel an GPIO 16, von vorne):** LED 0 sitzt **links oben**; Spalte 0 läuft nach unten (0..7),
-  Spalte 1 nach oben (8..15), usw. (durch Test T7 ermittelt – die erste Annahme „links unten“ war falsch)
+- **Verdrahtung eines nicht gedrehten Panels (von vorne):** LED 0 sitzt **links oben**; Spalte 0 läuft nach unten (0..7),
+  Spalte 1 nach oben (8..15), usw. (Test T7)
 - **Drehung (Tests T12–T13a, 2026-10-20):** Die Panels sind so montiert, dass die Anschlüsse zueinander zeigen.
   Elektrisch ist dabei das **obere Panel nicht gedreht** (LED 0 links oben) und das **untere um 180° gedreht**
-  (LED 0 rechts unten) – umgekehrt zur ursprünglichen Annahme. Im Code: `Pixelboard(false, true)` (Standard).
-  Aufgabe 1 (`src/aufgabe1/main.cpp`) nimmt noch „oben gedreht, unten nicht“ an – bei gleichem Aufbau umstellen.
+  (LED 0 rechts unten) – umgekehrt zur ursprünglichen Annahme. Im Code: `Pixelboard(false, true)` (Standard),
+  Aufgabe 1: `OBEN_GEDREHT = false`, `UNTEN_GEDREHT = true`.
 - **Defekt behoben (2026-10-20):** Am oberen Panel blieben die letzten ~40 LEDs dunkel – Ursache war ein
   Hardwaredefekt (vom Benutzer behoben), nicht die Software.
-- **Strom:** 256 LEDs × bis zu 60 mA ≈ 15 A bei vollem Weiß! Im Testprogramm daher Helligkeit 20/255 und
-  Strombegrenzung per `FastLED.setMaxPowerInVoltsAndMilliamps(5, 500)`
+- **Strom:** 256 LEDs × bis zu 60 mA ≈ 15 A bei vollem Weiß! Im Code daher Helligkeit 20/255 und
+  Strombegrenzung auf 500 mA (in `Pixelboard::begin()` bzw. `src/aufgabe1/main.cpp`)
 
 ## Kritische ESP32-Pins
 

@@ -15,8 +15,8 @@
 #define ANZAHL_PANELS 2              // 1 = nur unteres Panel (erster Schritt), 2 = oben + unten
 #define PIN_UNTEN 26                 // Data-Pin unteres Panel (Panel 0)
 #define PIN_OBEN 25                  // Data-Pin oberes Panel  (Panel 1)
-const bool UNTEN_GEDREHT = false;    // unteres Panel: LED 0 links oben (wie Test T7)
-const bool OBEN_GEDREHT = true;      // oberes Panel ist um 180° gedreht (Anschluesse zeigen zueinander)
+const bool UNTEN_GEDREHT = true;     // unteres Panel ist um 180° gedreht (Tests T12–T13a)
+const bool OBEN_GEDREHT = false;     // oberes Panel nicht gedreht: LED 0 links oben
 
 const uint8_t HELLIGKEIT = 20;       // 0..255, niedrig halten (Strom!)
 const uint32_t MAX_STROM_MA = 500;   // FastLED begrenzt die Helligkeit auf diesen Strom (USB-tauglich)

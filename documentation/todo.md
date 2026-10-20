@@ -37,17 +37,19 @@ Zurück zur [Übersicht](index.md).
 - [x] 2026-10-20 – Defekt oberes Panel (letzte ~40 LEDs) als Hardwarefehler gefunden und behoben (T13); Aufgabe 2 auf 2 Panels läuft (T12b)
 - [x] 2026-10-20 – `Pixelboard` aufgeräumt: `begin()` ohne Parameter (Pins 25/26), Helligkeit + Strombegrenzung in der Klasse,
       `setHelligkeit()`; Testprogramm ohne Diagnose-Phase; Build aufgabe1/2/3 ✅ (T14)
+- [x] 2026-10-20 – Snake auf `Pixelboard` umgestellt (Spielfeld 32×16 über beide Panels, Pins 25/26 statt GPIO 16); Build ✅ (T15)
+- [x] 2026-10-20 – Joystick-Problem bei Snake war ein Kabelfehler (VCC); Snake läuft (T15a)
+- [x] 2026-10-20 – Aufgeräumt: Snake-Klasse (Richtungen als `enum`, Konstanten, Methodenkommentare, ungenutzte Methoden
+      entfernt, keine Umkehr bei schnellen Eingaben), Snake-Hauptprogramm ohne Diagnose-Ausgabe und ohne `delay()`,
+      Joystick-Auswertung nach stärker ausgelenkter Achse; Aufgabe 1 Drehung korrigiert (oben nicht, unten gedreht);
+      veraltete Doku (GPIO 16, externer Joystick, Joystick-Fragen) entfernt; Build aufgabe1/2/3 ✅ (T16)
 
 ## Offen
 
 ### Pixelboard
-- [ ] Tests T9a (1 Panel an GPIO 26) und T9b (2 Panels) durchführen – T9a ersetzt T8 (GPIO 16)
-- [ ] Test T10 durchführen (Snake, 1 Panel an GPIO 16)
-- [ ] Aufgabe 1: Drehung prüfen/umstellen (laut T12/T12a: oben nicht gedreht, unten gedreht)
-- [ ] Snake auf 2 Panels umstellen (Klasse `Pixelboard` statt `LedPanel`)
-- [ ] Uhrzeit (Zeitserver), Wetter, DHT22 + Google-Tabelle
+- [ ] Test T16 durchführen (Snake nach dem Aufräumen) und T9b (Aufgabe 1 auf 2 Panels, Drehung korrigiert)
+- [ ] Uhrzeit (Zeitserver), Wetter (Temperatur), DHT22 + Google-Tabelle
+- [ ] Optional: Tetris, zweiter Joystick
 
 ### Sonstiges
-
-- [ ] Schritt 2: Rohwerte auf Zielbereich mappen, Totzone/Kalibrierung (Fragen in [anforderungen.md](anforderungen.md) klären)
 - [ ] DHT22 an GPIO 13 ausprobieren (siehe [hardware.md](hardware.md))

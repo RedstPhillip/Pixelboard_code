@@ -48,7 +48,7 @@ Build automatisch nach `.pio/libdeps/` herunter (nicht von Hand bearbeiten). Akt
 4. Sobald im Terminal `Connecting.....` erscheint: **BOOT-Taste am ESP32 gedrückt halten**, bis
    `Writing at ...` erscheint, dann loslassen. (Ohne das kommt „Wrong boot mode detected“.)
 5. Nach `SUCCESS` einmal die **EN-/RST-Taste** drücken (Neustart).
-6. Unten links auf **🔌 (Serial Monitor)** klicken → die Joystick-Werte laufen durch.
+6. Unten links auf **🔌 (Serial Monitor)** klicken → Ausgaben des Programms (z. B. „Snake gestartet“).
    Vor dem nächsten Upload den Monitor schließen (Papierkorb-Symbol im Terminal).
 
 ## Bedienung in VS Code

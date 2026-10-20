@@ -1,14 +1,22 @@
 //////////////////////////////////////////////
 // ---- Snake-Klasse (Deklaration) ----
-// Einfaches Snake-Spiel auf einem LED-Panel 32x8 (1 Panel).
-// Koordinaten: (0,0) = links oben, x nach rechts, y nach unten.
-// Verwendung siehe src/aufgabe3/main.cpp
+// Snake-Spiel auf dem Pixelboard 32x16 (2 Panels uebereinander).
+// Koordinaten wie Pixelboard: (0,0) = links oben, x nach rechts, y nach unten.
+//
+// Benutzung (siehe src/aufgabe3/main.cpp):
+//   snake.neustart();                        // in setup() und nach Game Over
+//   snake.setzeRichtung(Snake::OBEN);        // z. B. vom Joystick
+//   snake.bewegen();                         // in jedem loop(), bewegt sich selbst im Takt
+//   snake.zeichnen(board, CRGB::Green, CRGB::Orange);
+//
+// Implementierung: Snake.cpp
 //////////////////////////////////////////////
 
 #pragma once
 
 #include <Arduino.h>
 #include <FastLED.h>
+#include "Pixelboard.h"
 
 struct Punkt {
   int x;
@@ -17,43 +25,53 @@ struct Punkt {
 
 class Snake {
   public:
-    static const int MAX_KOERPER = 256; // genug fuer 32x8
+    // Bewegungsrichtungen (Reihenfolge wichtig: Gegenrichtung = (richtung + 2) % 4)
+    enum Richtung { RECHTS = 0, UNTEN = 1, LINKS = 2, OBEN = 3 };
+
+    static const int BREITE = Pixelboard::BREITE;            // 32
+    static const int HOEHE = Pixelboard::HOEHE;              // 16
+    static const int MAX_LAENGE = BREITE * HOEHE;            // 512
+    static const int START_LAENGE = 3;
+    static const unsigned long START_TEMPO_MS = 150;         // Bewegung alle 150 ms
+    static const unsigned long MIN_TEMPO_MS = 80;            // schneller wird es nicht
+    static const unsigned long BESCHLEUNIGUNG_MS = 2;        // pro gefressenem Futter
 
   private:
-    Punkt koerper[MAX_KOERPER];
+    Punkt koerper[MAX_LAENGE];   // koerper[0] = Kopf
     int laenge;
-    // Richtung: 0 = rechts, 1 = unten, 2 = links, 3 = oben
-    int richtung;
-    int naechsteRichtung;
+    Richtung richtung;           // aktuelle Bewegungsrichtung
+    Richtung naechsteRichtung;   // wird beim naechsten Schritt uebernommen
     Punkt futter;
-    bool futterVorhanden;
     bool gameOver;
-    bool gestartet;
-    unsigned long letzteBewegung;
-    unsigned long geschwindigkeitMs; // Bewegung alle X ms
-    int breite;
-    int hoehe;
+    unsigned long tempoMs;       // Zeit zwischen zwei Schritten
+    unsigned long letzterSchritt;
 
-    // erzeugt neues Futter, das nicht auf der Schlange liegt
-    void erzeugeFutter();
+    // Setzt das Futter auf ein zufaelliges freies Feld (nicht auf die Schlange).
+    void neuesFutter();
+
+    // Liefert true, wenn der Punkt (x, y) von der Schlange belegt ist.
+    bool istAufSchlange(int x, int y);
 
   public:
-    Snake(int b = 32, int h = 8);
-    // initialisiert Spiel (neustart)
-    void init(int startX = 16, int startY = 4);
-    // setzt naechste Richtung (nur 90 Grad erlaubt: nicht direkt umkehren)
-    void setzeRichtung(int neueRichtung); // 0 rechts, 1 unten, 2 links, 3 oben
-    // bewegt Schlange, prueft Kollisionen, frisst Futter
-    void bewegen();
-    // zeichnet auf LedPanel (ueber setzePixel)
-    void zeichnen(class LedPanel &panel, CRGB schlangeFarbe, CRGB futterFarbe);
-    // Game Over?
-    bool istGameOver();
-    // gestartet?
-    bool istGestartet();
-    // Starten/Pausenumschalter o.ae. nicht gebraucht, init startet neu
-    int getLaenge();
-    unsigned long getGeschwindigkeitMs();
-    void setzeGeschwindigkeitMs(unsigned long v);
-};
+    // Konstruktor: legt das Spiel an, ohne es zu starten (noch kein Hardwarezugriff).
+    Snake();
 
+    // Startet ein neues Spiel: Schlange (3 Glieder) in der Mitte, faehrt nach rechts, neues Futter.
+    void neustart();
+
+    // Merkt sich die naechste Richtung. Direkte Umkehr (z. B. rechts -> links) wird ignoriert.
+    void setzeRichtung(Richtung neueRichtung);
+
+    // Bewegt die Schlange um ein Feld, sobald tempoMs vergangen ist (nicht blockierend, in jedem loop()).
+    // Prueft Wand- und Selbstkollision (-> Game Over) und frisst Futter (-> laenger und schneller).
+    void bewegen();
+
+    // Zeichnet Schlange und Futter auf das Pixelboard. Sichtbar erst nach board.anzeigen().
+    void zeichnen(Pixelboard &board, CRGB schlangeFarbe, CRGB futterFarbe);
+
+    // Liefert true nach einer Wand- oder Selbstkollision.
+    bool istGameOver();
+
+    // Liefert die aktuelle Laenge der Schlange (z. B. als Punktestand).
+    int getLaenge();
+};

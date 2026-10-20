@@ -27,9 +27,9 @@ Zurück zur [Übersicht](index.md).
 1. Laufschrift mit LEDText, die eine Variable enthält (z. B. Sekundenzähler)
 2. Für Spiele: Methode, die einzelne LEDs über ein **x/y-Koordinatensystem** ansteuert
 
-**Status:** Beide Aufgaben für 1 Panel umgesetzt, jede mit eigenem Hauptprogramm:
-Aufgabe 1 in `src/aufgabe1/main.cpp` (Klasse `Laufschrift`), Aufgabe 2 in `src/aufgabe2/main.cpp` (`LedPanel::setzePixel`).
-Beide Aufgaben für **2 Panels** umgesetzt (Hardwaretests offen): Aufgabe 2 über die Klasse `Pixelboard` (`setzePixel` auf 32×16).
+**Status:** Beide Aufgaben für 1 und für **2 Panels** umgesetzt, jede mit eigenem Hauptprogramm:
+Aufgabe 1 in `src/aufgabe1/main.cpp` (Klasse `Laufschrift`), Aufgabe 2 in `src/aufgabe2/main.cpp` (Klasse `Pixelboard`, 32×16).
+Zusätzlich Snake (Aufgabe 3) in `src/aufgabe3/main.cpp` auf dem `Pixelboard`.
 
 ## Erstes Mini-Projekt: Joystick-Klasse (abgeschlossen)
 
@@ -62,13 +62,12 @@ Ein Joystick besteht aus:
 | 2026-10-13 | Pixelboard | Vorerst nur `main.cpp` bearbeiten: Testprogramm für **ein** Panel an GPIO 16. FastLED fest auf **3.7.8** (3.10.x kompiliert nicht) |
 | 2026-10-13 | Aufteilung Aufgaben | Projekte von Philipp (Aufgabe 2) und Dominika (Aufgabe 1) zusammengeführt. Jede Aufgabe hat ein eigenes Hauptprogramm (`src/aufgabe1/`, `src/aufgabe2/`) und eine eigene PlatformIO-Umgebung (`env:aufgabe1`, `env:aufgabe2`, per `build_src_filter`); Klassen gemeinsam in `src/` |
 | 2026-10-13 | Aufgabe 1 | Klasse `Laufschrift` nutzt **LEDMatrix** (Umrechnung) + **LEDText** (Laufschrift), unabhängig von `LedPanel`. Text „Zeit: X s“, grün, 50 ms pro Spalte; die Zahl zählt jede Sekunde **während** des Durchlaufs hoch (`aendereText()`), Text fest 12 Zeichen lang |
-| 2026-10-20 | Aufgabe 1, 2 Panels | Text läuft **zuerst über das obere Panel und dann unten weiter** (Wunsch Dominika). Umsetzung: beide Panels als ein Streifen 64×8 (neue Klasse `PanelStreifen`, Unterklasse von `cLEDMatrixBase`), x 0..31 = unten, 32..63 = oben. Pins: oben **25**, unten **26** (verkabelt). Oberes Panel als gedreht angenommen (Anschluss zeigt nach unten, das bisher getestete Panel hat LED 0 links oben = Anschluss oben → unteres Panel); per Konstante `OBEN_GEDREHT`/`UNTEN_GEDREHT` umstellbar. Umschalten 1/2 Panels mit `ANZAHL_PANELS` |
-| 2026-10-20 | Aufgabe 3 (Snake) | Eigene Klasse `Snake` (`src/Snake.h`/`.cpp`) + Hauptprogramm `src/aufgabe3/main.cpp` → `env:aufgabe3`. Ein Panel 32×8, Zeichnen über `LedPanel::setzePixel`, Steuerung über `Joystick` (Schwellen 1500/2500 wegen Ruhelage ~1800–2000), Futter frisst/wächst, Tempo steigt ab 80 ms, Game Over bei Wand/Selbstkollision, Neustart per kurzem Tastendruck |
+| 2026-10-20 | Aufgabe 1, 2 Panels | Text läuft **zuerst über das obere Panel und dann unten weiter** (Wunsch Dominika). Umsetzung: beide Panels als ein Streifen 64×8 (neue Klasse `PanelStreifen`, Unterklasse von `cLEDMatrixBase`), x 0..31 = unten, 32..63 = oben. Pins: oben **25**, unten **26** (verkabelt). Drehung per Konstante `OBEN_GEDREHT`/`UNTEN_GEDREHT` (ursprünglich oben gedreht angenommen; am 2026-10-20 nach Test T12–T13a korrigiert: oben nicht, unten gedreht). Umschalten 1/2 Panels mit `ANZAHL_PANELS` |
+| 2026-10-20 | Aufgabe 3 (Snake) | Eigene Klasse `Snake` (`src/Snake.h`/`.cpp`) + Hauptprogramm `src/aufgabe3/main.cpp` → `env:aufgabe3`. Ursprünglich ein Panel 32×8 über `LedPanel`; **seit 2026-10-20 auf `Pixelboard` 32×16 (2 Panels, Pins 25/26) umgestellt**, Steuerung über `Joystick` (Schwellen 1500/2500 wegen Ruhelage ~1800–2000), Futter frisst/wächst, Tempo steigt ab 80 ms, Game Over bei Wand/Selbstkollision, Neustart per kurzem Tastendruck |
 | 2026-10-20 | Aufgabe 2, 2 Panels | `LedPanel` bleibt **ein** Panel und bekommt die Option „180° gedreht“ (Konstruktor-Parameter). Neue Klasse `Pixelboard` enthält zwei `LedPanel` (Komposition) und bietet **eine** Fläche 32×16: (0,0) links oben, y 0..7 oben, y 8..15 unten. Pins oben 25, unten 26; Drehung per `OBEN_GEDREHT`/`UNTEN_GEDREHT` umstellbar. Laut Test T12/T12a ist **das untere Panel gedreht, das obere nicht** (oben `false`, unten `true`); Standard im Konstruktor entsprechend. Drehung wird gleich gerechnet wie in `PanelStreifen` (x und y spiegeln). Benutzung vereinfacht: `board.begin()` mit Standard-Pins 25/26, Helligkeit 20 und 500 mA Strombegrenzung in der Klasse |
+| 2026-10-20 | Snake aufgeräumt | Richtungen als `enum Snake::Richtung`, Spielfeld fest = `Pixelboard` 32×16, `neustart()` statt `init()`. Joystick: gewertet wird die stärker ausgelenkte Achse (Totzone 1500–2500), damit eine ignorierte Umkehr nicht die andere Achse blockiert. Tastendrücke während des Spiels werden verworfen (kein ungewollter Neustart) |
 | 2026-10-13 | Upload-Port | `upload_port`/`monitor_port` nicht mehr fest (COM6), sondern automatische Erkennung – der Port ist auf jedem PC anders |
 
-## Offene Fragen (erst bei Bedarf klären)
+## Offene Fragen
 
-1. **Wertebereich der Achsen:** Rohwerte 0–4095 beibehalten, auf -100…+100 umrechnen oder Richtungen
-   (links/rechts/oben/unten/Mitte)?
-2. **Totzone / Kalibrierung:** Mittelstellung beim Start kalibrieren? Totzone um die Mitte?
+Zurzeit keine. (Die früheren Fragen zu Wertebereich/Totzone des Joysticks sind durch die Snake-Steuerung erledigt.)

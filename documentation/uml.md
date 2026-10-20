@@ -210,10 +210,9 @@ Objekt in Aufgabe 1: `laufschrift(50, ANZAHL_PANELS)`; unten GPIO 26, oben GPIO 
 
 ## Klasse `Snake` (`src/Snake.h`, `src/Snake.cpp`) – Aufgabe 3
 
-Einfaches Snake-Spiel auf **einem** Panel. Nutzt das x/y-Koordinatensystem von `LedPanel`
-(`zeichnen()` bekommt ein `LedPanel&` übergeben), kein eigener LED-Speicher.
-
-Hilfsstruktur `Punkt` mit `x` und `y`.
+Snake-Spiel auf dem **Pixelboard 32×16**. Spielfeld = ganzes Pixelboard, kein eigener LED-Speicher:
+`zeichnen()` bekommt das `Pixelboard&` übergeben. Hilfsstruktur `Punkt` (x, y), Richtungen als `enum Snake::Richtung`
+(`RECHTS`, `UNTEN`, `LINKS`, `OBEN`).
 
 ```mermaid
 classDiagram
@@ -223,44 +222,44 @@ classDiagram
   }
 
   class Snake {
-    +static const int MAX_KOERPER = 256
-    -Punkt koerper[256]
+    +static const int BREITE = 32
+    +static const int HOEHE = 16
+    +static const int MAX_LAENGE = 512
+    +static const int START_LAENGE = 3
+    +static const unsigned long START_TEMPO_MS = 150
+    +static const unsigned long MIN_TEMPO_MS = 80
+    +static const unsigned long BESCHLEUNIGUNG_MS = 2
+    -Punkt koerper[512]
     -int laenge
-    -int richtung
-    -int naechsteRichtung
+    -Richtung richtung
+    -Richtung naechsteRichtung
     -Punkt futter
-    -bool futterVorhanden
     -bool gameOver
-    -bool gestartet
-    -unsigned long letzteBewegung
-    -unsigned long geschwindigkeitMs
-    -int breite
-    -int hoehe
-    -erzeugeFutter() void
-    +Snake(int b, int h)
-    +init(int startX, int startY) void
-    +setzeRichtung(int neueRichtung) void
+    -unsigned long tempoMs
+    -unsigned long letzterSchritt
+    -neuesFutter() void
+    -istAufSchlange(int x, int y) bool
+    +Snake()
+    +neustart() void
+    +setzeRichtung(Richtung neueRichtung) void
     +bewegen() void
-    +zeichnen(LedPanel& panel, CRGB schlangeFarbe, CRGB futterFarbe) void
+    +zeichnen(Pixelboard& board, CRGB schlangeFarbe, CRGB futterFarbe) void
     +istGameOver() bool
-    +istGestartet() bool
     +getLaenge() int
-    +getGeschwindigkeitMs() unsigned long
-    +setzeGeschwindigkeitMs(unsigned long v) void
   }
 
-  Snake --> LedPanel : zeichnet auf
-  Snake --> Punkt : Koerper und Futter
+  Snake --> Pixelboard : zeichnet auf
+  Snake *-- Punkt : Koerper und Futter
 ```
 
 | Methode | Beschreibung |
 |---|---|
-| `Snake(b, h)` | Legt Spielfeldgröße fest (Standard 32×8). Kein Hardwarezugriff, noch kein Spielstart. |
-| `init(startX, startY)` | Startet neu: 3 Segmente waagerecht, Kopf bei `(startX, startY)`, Richtung rechts, Futter wird zufällig gesetzt. |
-| `setzeRichtung(r)` | 0 = rechts, 1 = unten, 2 = links, 3 = oben. Direkte Umkehr wird ignoriert. |
-| `bewegen()` | Nicht blockierend: bewegt die Schlange alle `geschwindigkeitMs`. Prüft Wand- und Selbstkollision, frisst Futter (Schlange wächst, wird ab 80 ms etwas schneller). |
-| `zeichnen(panel, …)` | Zeichnet Schlange (grün) und Futter (orange) über `setzePixel()`; nichts sichtbar bis `panel.anzeigen()`. |
-| `istGameOver()` | `true` nach Wand- oder Selbstkollision. |
+| `Snake()` | Legt das Spiel an, ohne es zu starten (`istGameOver()` ist bis `neustart()` true). |
+| `neustart()` | 3 Glieder waagerecht in der Mitte (16/8), fährt nach rechts, neues Futter, Tempo 150 ms. |
+| `setzeRichtung(r)` | Merkt sich die nächste Richtung. Umkehr gegenüber der **aktuellen** Richtung wird ignoriert. |
+| `bewegen()` | Nicht blockierend: alle `tempoMs` ein Feld. Wand/Selbstkollision → Game Over; Futter → +1 Glied, 2 ms schneller (bis 80 ms). |
+| `zeichnen(board, …)` | Zeichnet Schlange und Futter über `setzePixel()`; sichtbar nach `board.anzeigen()`. |
+| `istGameOver()` / `getLaenge()` | Spielende bzw. Länge (Punktestand). |
 
-Objekt in Aufgabe 3: `snake(32, 8)`; Steuerung über `Joystick` (Schwellen 1500/2500, Totzone dazwischen),
-Neustart nach Game Over per kurzem Tastendruck.
+Aufgabe 3 (`src/aufgabe3/main.cpp`): `Pixelboard board`, `Joystick joystick(14, 34, 35)`, `Snake snake`.
+Steuerung: stärker ausgelenkte Achse zählt (Totzone 1500–2500), kurzer Tastendruck = Neustart nach Game Over.

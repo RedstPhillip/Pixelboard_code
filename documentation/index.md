@@ -31,21 +31,19 @@ Taster/
 │   ├── Laufschrift.cpp  Klasse Laufschrift – Implementierung
 │   ├── PanelStreifen.h  Klasse PanelStreifen – Deklaration (2 Panels als ein 64×8-Streifen, 180°-Drehung)
 │   ├── PanelStreifen.cpp Klasse PanelStreifen – Implementierung (Umrechnung x/y → LED in Panel 0/1)
-│   ├── Snake.h          Klasse Snake – Deklaration (Snake-Spiel)
+│   ├── Snake.h          Klasse Snake – Deklaration (Snake-Spiel auf dem Pixelboard)
 │   ├── Snake.cpp        Klasse Snake – Implementierung
 │   ├── aufgabe1/
 │   │   └── main.cpp     Aufgabe 1: Laufschrift mit Sekundenzähler (1 oder 2 Panels, oben 25 / unten 26) → env:aufgabe1
 │   ├── aufgabe2/
-│   │   └── main.cpp     Aufgabe 2: Testprogramm x/y-Koordinaten (1 Panel an GPIO 16) → env:aufgabe2
+│   │   └── main.cpp     Aufgabe 2: Testprogramm x/y-Koordinaten (Pixelboard, 2 Panels) → env:aufgabe2
 │   └── aufgabe3/
-│       └── main.cpp     Aufgabe 3: Snake-Spiel mit Joystick (1 Panel an GPIO 16) → env:aufgabe3
+│       └── main.cpp     Aufgabe 3: Snake-Spiel mit Joystick (Pixelboard 32x16) → env:aufgabe3
 └── documentation/       Diese Dokumentation
 ```
 
 ## Aktueller Stand
 
-Siehe [todo.md](todo.md). Kurzfassung: Joystick-Mini-Projekt abgeschlossen. Neues **Projekt Pixelboard**:
-Libraries installiert und getestet. Aufgabe 1 (Laufschrift, Version für **2 Panels** umgesetzt – oben, dann unten
-weiter; Tests T9a/T9b offen), Aufgabe 2 (x/y-Methode, für **2 Panels** über Klasse `Pixelboard`, Test T12b bestanden) und
-Aufgabe 3 (Snake, Klasse `Snake`, 1 Panel an GPIO 16, Test T10 offen).
-Danach: Snake auf `Pixelboard` (2 Panels), Uhrzeit, Wetter, DHT22.
+Siehe [todo.md](todo.md). Kurzfassung: Joystick-Mini-Projekt abgeschlossen. **Projekt Pixelboard** (2 Panels, 32×16):
+Aufgabe 1 (Laufschrift über beide Panels), Aufgabe 2 (x/y-Koordinaten, Klasse `Pixelboard`) und Aufgabe 3 (Snake mit
+Joystick) laufen. Als Nächstes: Uhrzeit, Wetter, DHT22 + Google-Tabelle.
