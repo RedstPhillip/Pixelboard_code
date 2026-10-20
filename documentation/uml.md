@@ -169,3 +169,60 @@ Ungedreht ergibt das für jedes Pixel denselben Index wie vorher `cLEDMatrix<32,
 | `wurdeDurchlaufBeendet()` | Einmalig `true`, wenn der Text komplett durchgelaufen ist. |
 
 Objekt in Aufgabe 1: `laufschrift(50, ANZAHL_PANELS)`; unten GPIO 26, oben GPIO 25 (gedreht).
+
+## Klasse `Snake` (`src/Snake.h`, `src/Snake.cpp`) – Aufgabe 3
+
+Einfaches Snake-Spiel auf **einem** Panel. Nutzt das x/y-Koordinatensystem von `LedPanel`
+(`zeichnen()` bekommt ein `LedPanel&` übergeben), kein eigener LED-Speicher.
+
+Hilfsstruktur `Punkt` mit `x` und `y`.
+
+```mermaid
+classDiagram
+  class Punkt {
+    +int x
+    +int y
+  }
+
+  class Snake {
+    +static const int MAX_KOERPER = 256
+    -Punkt koerper[256]
+    -int laenge
+    -int richtung
+    -int naechsteRichtung
+    -Punkt futter
+    -bool futterVorhanden
+    -bool gameOver
+    -bool gestartet
+    -unsigned long letzteBewegung
+    -unsigned long geschwindigkeitMs
+    -int breite
+    -int hoehe
+    -erzeugeFutter() void
+    +Snake(int b, int h)
+    +init(int startX, int startY) void
+    +setzeRichtung(int neueRichtung) void
+    +bewegen() void
+    +zeichnen(LedPanel& panel, CRGB schlangeFarbe, CRGB futterFarbe) void
+    +istGameOver() bool
+    +istGestartet() bool
+    +getLaenge() int
+    +getGeschwindigkeitMs() unsigned long
+    +setzeGeschwindigkeitMs(unsigned long v) void
+  }
+
+  Snake --> LedPanel : zeichnet auf
+  Snake --> Punkt : Koerper und Futter
+```
+
+| Methode | Beschreibung |
+|---|---|
+| `Snake(b, h)` | Legt Spielfeldgröße fest (Standard 32×8). Kein Hardwarezugriff, noch kein Spielstart. |
+| `init(startX, startY)` | Startet neu: 3 Segmente waagerecht, Kopf bei `(startX, startY)`, Richtung rechts, Futter wird zufällig gesetzt. |
+| `setzeRichtung(r)` | 0 = rechts, 1 = unten, 2 = links, 3 = oben. Direkte Umkehr wird ignoriert. |
+| `bewegen()` | Nicht blockierend: bewegt die Schlange alle `geschwindigkeitMs`. Prüft Wand- und Selbstkollision, frisst Futter (Schlange wächst, wird ab 80 ms etwas schneller). |
+| `zeichnen(panel, …)` | Zeichnet Schlange (grün) und Futter (orange) über `setzePixel()`; nichts sichtbar bis `panel.anzeigen()`. |
+| `istGameOver()` | `true` nach Wand- oder Selbstkollision. |
+
+Objekt in Aufgabe 3: `snake(32, 8)`; Steuerung über `Joystick` (Schwellen 1500/2500, Totzone dazwischen),
+Neustart nach Game Over per kurzem Tastendruck.

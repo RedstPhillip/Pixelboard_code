@@ -29,18 +29,19 @@ Zurück zur [Übersicht](index.md).
       während des Durchlaufs hoch (von Dominika, in eigenem Projekt entwickelt und getestet)
 - [x] 2026-10-13 – Projekte zusammengeführt: `src/aufgabe1/main.cpp` (Laufschrift) und `src/aufgabe2/main.cpp` (x/y),
       je eigene PlatformIO-Umgebung; Upload-Port automatisch statt COM6; Build beider Umgebungen ✅ (T8)
-
 - [x] 2026-10-20 – Aufgabe 1 für **2 Panels**: neue Klasse `PanelStreifen` (2 Panels als 64×8-Streifen, 180°-Drehung),
       `Laufschrift` umgebaut (Panelanzahl wählbar); Text läuft oben, dann unten weiter; Build beider Umgebungen ✅ (T9a, T9b)
+- [x] 2026-10-20 – Aufgabe 3: Snake-Spiel hinzugefügt (`src/aufgabe3/main.cpp`, Klasse `Snake.h`/`.cpp`, `env:aufgabe3`)
 
 ## Offen
 
 ### Pixelboard
 - [ ] Test T7a durchführen (korrigierte y-Richtung)
 - [ ] Tests T9a (1 Panel an GPIO 26) und T9b (2 Panels) durchführen – T9a ersetzt T8 (GPIO 16)
+- [ ] Test T10 durchführen (Snake, 1 Panel an GPIO 16)
 - [ ] Aufgabe 2 für **2 Panels**: zweites Panel (180° gedreht) – z. B. `LedPanel` um Drehung erweitern + Gesamtfläche 32×16
 - [ ] Aufgabe 2 (`src/aufgabe2/main.cpp`) nutzt noch GPIO 16 – auf 25/26 umstellen, wenn Aufgabe 2 für 2 Panels gebaut wird
-- [ ] Uhrzeit (Zeitserver), Wetter, Snake, DHT22 + Google-Tabelle
+- [ ] Uhrzeit (Zeitserver), Wetter, Snake für 2 Panels, DHT22 + Google-Tabelle
 
 ### Sonstiges
 

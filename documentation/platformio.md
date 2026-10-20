@@ -9,7 +9,8 @@ Taster/                  ← diesen Ordner in VS Code öffnen (Datei → Ordner 
 ├── platformio.ini       Projektkonfiguration (Board, Framework, Baudrate)
 ├── src/aufgabe1/main.cpp  Hauptprogramm Aufgabe 1 (Laufschrift) – nur in env:aufgabe1
 ├── src/aufgabe2/main.cpp  Hauptprogramm Aufgabe 2 (x/y-Koordinaten) – nur in env:aufgabe2
-├── src/*.h / src/*.cpp    Klassen (Joystick, LedPanel, Laufschrift, PanelStreifen), werden von beiden Umgebungen mitkompiliert
+├── src/aufgabe3/main.cpp  Hauptprogramm Aufgabe 3 (Snake) – nur in env:aufgabe3
+├── src/*.h / src/*.cpp    Klassen (Joystick, LedPanel, Laufschrift, PanelStreifen, Snake), werden von den Umgebungen mitkompiliert
 └── .pio/                Build-Ausgabe, wird automatisch erzeugt – nicht bearbeiten
 ```
 
@@ -23,7 +24,7 @@ Taster/                  ← diesen Ordner in VS Code öffnen (Datei → Ordner 
 | `monitor_speed` | `115200` | Baudrate des Serial Monitors, muss zu `Serial.begin()` passen |
 | `upload_port` / `monitor_port` | auskommentiert | Port wird automatisch erkannt (CP210x/CH340). Nicht fest eintragen: der Port ist auf jedem PC anders (Philipp COM6, Dominika COM3 – dort ist COM6 Bluetooth) |
 | `[env]` | gemeinsamer Teil | Einstellungen und Bibliotheken für alle Aufgaben |
-| `[env:aufgabe1]` / `[env:aufgabe2]` | `build_src_filter` | Jede Umgebung kompiliert alle Klassen in `src/`, aber nur **ihr** Hauptprogramm (der andere Aufgaben-Ordner wird ausgeschlossen – sonst gäbe es zwei `setup()`/`loop()`) |
+| `[env:aufgabe1]` / `[env:aufgabe2]` / `[env:aufgabe3]` | `build_src_filter` | Jede Umgebung kompiliert alle Klassen in `src/`, aber nur **ihr** Hauptprogramm (andere Aufgaben-Ordner werden ausgeschlossen – sonst gäbe es zwei `setup()`/`loop()`) |
 | `default_envs` | `aufgabe1` | Umgebung, die ohne Auswahl gebaut/hochgeladen wird |
 
 **Aufgabe auswählen:** In VS Code unten in der blauen Statusleiste auf **`env:…`** klicken und `env:aufgabe1` oder
@@ -42,7 +43,7 @@ Build automatisch nach `.pio/libdeps/` herunter (nicht von Hand bearbeiten). Akt
 ## Schritt für Schritt: Programm auf den ESP32 bringen
 
 1. VS Code → *Datei → Ordner öffnen* → Ordner `Taster` (der mit `platformio.ini`).
-2. ESP32 per USB anschließen (Port wird automatisch erkannt) und unten die Aufgabe (`env:aufgabe1`/`env:aufgabe2`) wählen.
+2. ESP32 per USB anschließen (Port wird automatisch erkannt) und unten die Aufgabe (`env:aufgabe1`/`env:aufgabe2`/`env:aufgabe3`) wählen.
 3. Unten links auf **→ (Upload)** klicken.
 4. Sobald im Terminal `Connecting.....` erscheint: **BOOT-Taste am ESP32 gedrückt halten**, bis
    `Writing at ...` erscheint, dann loslassen. (Ohne das kommt „Wrong boot mode detected“.)

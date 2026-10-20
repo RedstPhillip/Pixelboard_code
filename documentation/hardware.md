@@ -20,7 +20,7 @@ Bei jeder Änderung an Verkabelung oder Pins wird sie von der KI selbständig ak
 | GND | Joystick GND | – |
 | 34 | Joystick X | ADC1, nur Eingang, kein interner Pull-up/-down |
 | 35 | Joystick Y | ADC1, nur Eingang, kein interner Pull-up/-down |
-| 16 | Data-Pin LED-Panel (**aktuell zum Testen**, nur ein Panel angeschlossen; nur noch Aufgabe 2 – Aufgabe 1 nutzt 25/26) | Ausgang; bei ESP32-WROVER-Modulen für PSRAM belegt, beim WROOM (esp32dev) frei |
+| 16 | Data-Pin LED-Panel (**aktuell zum Testen**, nur ein Panel angeschlossen; Aufgabe 2 und 3 – Aufgabe 1 nutzt 25/26) | Ausgang; bei ESP32-WROVER-Modulen für PSRAM belegt, beim WROOM (esp32dev) frei |
 | 25 | Data-Pin **oberes** LED-Panel (verkabelt, Aufgabe 1) | Ausgang (ADC2-Pin, als digitaler Ausgang unproblematisch) |
 | 26 | Data-Pin **unteres** LED-Panel (verkabelt, Aufgabe 1) | Ausgang (ADC2-Pin, als digitaler Ausgang unproblematisch) |
 | 13 (?) | DHT22 Data | **noch auszuprobieren** |
