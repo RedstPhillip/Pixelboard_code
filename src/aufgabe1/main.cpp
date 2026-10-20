@@ -1,6 +1,7 @@
 //////////////////////////////////////////////
-// ---- Aufgabe 1: Laufschrift mit Variable (1 Panel an GPIO 16) ----
-// Text "Zeit: X s" laeuft von rechts nach links ueber das Panel (Klasse Laufschrift, Library LEDText).
+// ---- Aufgabe 1: Laufschrift mit Variable (1 oder 2 Panels, oben GPIO 25, unten GPIO 26) ----
+// Text "Zeit: X s" laeuft von rechts nach links (Klasse Laufschrift, Library LEDText).
+// 2 Panels: zuerst ueber das obere Panel, danach laeuft er unten weiter. 1 Panel: nur unten.
 // Die Zahl (Sekundenzaehler) zaehlt jede Sekunde hoch – auch waehrend der Text gerade durchlaeuft.
 // Serial Monitor: jede Sekunde "Laufschrift: Zeit: X s" zum Vergleich mit dem Panel.
 // Umgebung in PlatformIO: env:aufgabe1 (siehe documentation/platformio.md)
@@ -10,12 +11,17 @@
 #include <FastLED.h>
 #include "Laufschrift.h"
 
-#define PANEL_PIN 16
+// ---- Panels (siehe documentation/hardware.md) ----
+#define ANZAHL_PANELS 2              // 1 = nur unteres Panel (erster Schritt), 2 = oben + unten
+#define PIN_UNTEN 26                 // Data-Pin unteres Panel (Panel 0)
+#define PIN_OBEN 25                  // Data-Pin oberes Panel  (Panel 1)
+const bool UNTEN_GEDREHT = false;    // unteres Panel: LED 0 links oben (wie Test T7)
+const bool OBEN_GEDREHT = true;      // oberes Panel ist um 180° gedreht (Anschluesse zeigen zueinander)
 
 const uint8_t HELLIGKEIT = 20;       // 0..255, niedrig halten (Strom!)
 const uint32_t MAX_STROM_MA = 500;   // FastLED begrenzt die Helligkeit auf diesen Strom (USB-tauglich)
 
-Laufschrift laufschrift(50);         // 50 ms pro Spalte
+Laufschrift laufschrift(50, ANZAHL_PANELS);  // 50 ms pro Spalte
 char laufschriftText[32];            // Text mit aktuellem Zaehlerstand
 unsigned long letzteSekunde = 0;     // zuletzt angezeigter Zaehlerstand
 
@@ -40,7 +46,12 @@ void laufschriftNeuStarten() {
 
 void setup() {
   Serial.begin(115200);
-  FastLED.addLeds<WS2812B, PANEL_PIN, GRB>(laufschrift.getLeds(), laufschrift.getAnzahlLeds());
+  FastLED.addLeds<WS2812B, PIN_UNTEN, GRB>(laufschrift.getLeds(0), PanelStreifen::LEDS_PRO_PANEL);
+  if (ANZAHL_PANELS >= 2) {
+    FastLED.addLeds<WS2812B, PIN_OBEN, GRB>(laufschrift.getLeds(1), PanelStreifen::LEDS_PRO_PANEL);
+  }
+  laufschrift.setGedreht(0, UNTEN_GEDREHT);
+  laufschrift.setGedreht(1, OBEN_GEDREHT);
   FastLED.setBrightness(HELLIGKEIT);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_STROM_MA);
   FastLED.clear(true);
