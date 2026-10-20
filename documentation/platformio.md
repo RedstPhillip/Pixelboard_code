@@ -9,7 +9,7 @@ Taster/                  ← diesen Ordner in VS Code öffnen (Datei → Ordner 
 ├── platformio.ini       Projektkonfiguration (Board, Framework, Baudrate)
 ├── src/aufgabe1/main.cpp  Hauptprogramm Aufgabe 1 (Laufschrift) – nur in env:aufgabe1
 ├── src/aufgabe2/main.cpp  Hauptprogramm Aufgabe 2 (x/y-Koordinaten) – nur in env:aufgabe2
-├── src/*.h / src/*.cpp    Klassen (Joystick, LedPanel, Laufschrift), werden von beiden Umgebungen mitkompiliert
+├── src/*.h / src/*.cpp    Klassen (Joystick, LedPanel, Laufschrift, PanelStreifen), werden von beiden Umgebungen mitkompiliert
 └── .pio/                Build-Ausgabe, wird automatisch erzeugt – nicht bearbeiten
 ```
 
